@@ -11,6 +11,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,6 +25,7 @@ import java.util.Properties;
 public class ApiBaseClass {
 
     public RequestSpecification requestSpec;
+    public ResponseSpecification responseSpec;
     public Response response;
 
 
@@ -48,6 +50,11 @@ public class ApiBaseClass {
                 .addFilter(ResponseLoggingFilter.logResponseTo(pos)).log(LogDetail.ALL).build();
 
         return requestSpec;
+    }
+
+    public ResponseSpecification response(){
+        responseSpec = RestAssured.expect().log().all();
+        return responseSpec;
     }
 
     /**
