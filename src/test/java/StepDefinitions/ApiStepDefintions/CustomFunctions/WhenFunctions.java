@@ -16,8 +16,7 @@ public class WhenFunctions {
     public void userCallRequest(String api, String requestType) {
         switch (requestType.toUpperCase()) {
             case "GET":
-                apiBaseClass.response = apiBaseClass.requestSpec.when().get(api).then().extract().response();
-                break;
+                apiBaseClass.response = apiBaseClass.requestSpec.when().get().then().extract().response();
             case "POST":
                 apiBaseClass.response = apiBaseClass.requestSpec.when().post(api).then().extract().response();
                 break;

@@ -1,10 +1,11 @@
 package StepDefinitions.ApiStepDefintions.CustomFunctions;
 
 import API_Functions.BaseClass.ApiBaseClass;
+import CommonUtilityFunctions.GlobalVariablePlaceHolder;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import static io.restassured.RestAssured.*;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,10 @@ public class GivenFunctions {
         this.apiBaseClass = apiBaseClass;
     }
 
-    @Given("I have a {}")
+    @Given("I have a {string}")
     public void createARequest(String baseURI){
-        apiBaseClass.requestSpec = given().spec(apiBaseClass.request(baseURI)).auth().basic("","");
+        String URI = GlobalVariablePlaceHolder.resolveGlobalVariables(baseURI);
+        apiBaseClass.requestSpec = given().spec(apiBaseClass.request(URI));
     }
 
     @Given("I have path parameter")

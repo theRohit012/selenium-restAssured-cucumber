@@ -1,10 +1,13 @@
 package API_Functions.BaseClass;
 
 import CommonUtilityFunctions.ConfigReader;
+import com.fasterxml.jackson.databind.ser.std.ObjectArraySerializer;
+import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -12,13 +15,16 @@ import io.restassured.specification.RequestSpecification;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Properties;
 
 public class ApiBaseClass {
 
     public RequestSpecification requestSpec;
     public Response response;
-    public Properties prop = ConfigReader.initProperties();
 
 
     /**
@@ -26,16 +32,18 @@ public class ApiBaseClass {
      * @param basURI
      * @return
      */
-    public RequestSpecification request(String basURI) {
+    public RequestSpecification request(String baseURI) {
         PrintStream pos = null;
+        RestAssured.baseURI = baseURI;
+
         try {
             pos = new PrintStream(new FileOutputStream("logging.txt"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        requestSpec = new RequestSpecBuilder().
-                setBaseUri(basURI).setRelaxedHTTPSValidation().setUrlEncodingEnabled(true)
+        requestSpec = new RequestSpecBuilder()
+                .setRelaxedHTTPSValidation().setUrlEncodingEnabled(true).setAccept(ContentType.JSON)
                 .addFilter(RequestLoggingFilter.logRequestTo(pos))
                 .addFilter(ResponseLoggingFilter.logResponseTo(pos)).log(LogDetail.ALL).build();
 
