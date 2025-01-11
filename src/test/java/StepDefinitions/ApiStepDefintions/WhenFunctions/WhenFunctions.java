@@ -1,15 +1,18 @@
-package StepDefinitions.ApiStepDefintions.CustomFunctions;
+package StepDefinitions.ApiStepDefintions.WhenFunctions;
 
 import API_Functions.BaseClass.ApiBaseClass;
+import CommonUtilityFunctions.SharedTestContext;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
 
 public class WhenFunctions {
 
     private final ApiBaseClass apiBaseClass;
+    private final SharedTestContext sharedTestContext;
 
-    public WhenFunctions(ApiBaseClass apiBaseClass) {
+    public WhenFunctions(ApiBaseClass apiBaseClass, SharedTestContext sharedTestContext){
         this.apiBaseClass = apiBaseClass;
+        this.sharedTestContext = sharedTestContext;
     }
 
     @When("I call {string} with {string} request")

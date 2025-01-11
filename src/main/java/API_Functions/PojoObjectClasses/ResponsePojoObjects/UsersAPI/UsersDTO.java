@@ -1,6 +1,5 @@
-package API_Functions.PojoObjectClasses.ResponsePojoObjects;
+package API_Functions.PojoObjectClasses.ResponsePojoObjects.UsersAPI;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 

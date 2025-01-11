@@ -1,4 +1,4 @@
-package API_Functions.PojoObjectClasses.ResponsePojoObjects;
+package API_Functions.PojoObjectClasses.ResponsePojoObjects.UsersAPI;
 
 import lombok.Getter;
 import lombok.Setter;

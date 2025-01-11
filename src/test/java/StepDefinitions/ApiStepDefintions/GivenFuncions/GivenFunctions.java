@@ -1,10 +1,10 @@
-package StepDefinitions.ApiStepDefintions.CustomFunctions;
+package StepDefinitions.ApiStepDefintions.GivenFuncions;
 
 import API_Functions.BaseClass.ApiBaseClass;
 import CommonUtilityFunctions.GlobalVariablePlaceHolder;
+import CommonUtilityFunctions.SharedTestContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
-import static io.restassured.RestAssured.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,9 +15,11 @@ import static io.restassured.RestAssured.given;
 
 public class GivenFunctions {
     private final ApiBaseClass apiBaseClass;
+    private final SharedTestContext sharedTestContext;
 
-    public GivenFunctions(ApiBaseClass apiBaseClass){
+    public GivenFunctions(ApiBaseClass apiBaseClass, SharedTestContext sharedTestContext){
         this.apiBaseClass = apiBaseClass;
+        this.sharedTestContext = sharedTestContext;
     }
 
     @Given("I have a {string}")
