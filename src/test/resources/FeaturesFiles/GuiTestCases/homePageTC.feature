@@ -8,5 +8,5 @@ Feature: Verify homePage functionalities
 
   Scenario: Verify Navigation Links in the header
     Then Verify following texts are visible on "HomePageOR"
-      | Flight Booking
-      | Top Deals
+      | Flight Booking |
+      | Top Deals      |
