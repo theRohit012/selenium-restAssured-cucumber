@@ -1,6 +1,7 @@
 package StepDefinitions.ApiStepDefintions.ThenFunctions;
 
 import API_Functions.BaseClass.ApiBaseClass;
+import ApplicationHook.AppHook;
 import CommonUtilityFunctions.SharedTestContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
@@ -22,11 +23,13 @@ public class ThenFunctions {
 
     @Then("API call success with status code {int}")
     public void apiSuccessStatus(int status) {
+        AppHook.getTest().info("API call success with status code " + status);
         Assert.assertEquals(apiBaseClass.response.getStatusCode(), status);
     }
 
     @Then("I call {string} with {string} request to verify the {string} JSON schema")
     public void userCallRequest(String api, String requestType, String schema) throws IOException {
+        AppHook.getTest().info("I call "+api+" with "+requestType+" request to verify the "+schema+" JSON schema");
 
         switch (requestType.toUpperCase()) {
             case "GET":
@@ -56,6 +59,7 @@ public class ThenFunctions {
 
     @Then("I stored the response in {string} POJO class")
     public void storedResponseInPojoClass(String pojoPath) {
+        AppHook.getTest().info("I stored the response in "+pojoPath+" POJO class");
         Class<?> loadClass = null;
 
         try {

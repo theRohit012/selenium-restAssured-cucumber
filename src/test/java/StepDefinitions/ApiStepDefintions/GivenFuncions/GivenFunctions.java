@@ -1,6 +1,7 @@
 package StepDefinitions.ApiStepDefintions.GivenFuncions;
 
 import API_Functions.BaseClass.ApiBaseClass;
+import ApplicationHook.AppHook;
 import CommonUtilityFunctions.GlobalVariablePlaceHolder;
 import CommonUtilityFunctions.SharedTestContext;
 import io.cucumber.datatable.DataTable;
@@ -24,12 +25,14 @@ public class GivenFunctions {
 
     @Given("I have a {string}")
     public void createARequest(String baseURI){
+        AppHook.getTest().info("I have a " + baseURI);
         String URI = GlobalVariablePlaceHolder.resolveGlobalVariables(baseURI);
         apiBaseClass.requestSpec = given().spec(apiBaseClass.request(URI));
     }
 
     @Given("I have path parameter")
     public void setPathParameterWithRequest(DataTable table){
+        AppHook.getTest().info("I have path parameter : " + table.asMaps());
         List<Map<String,String>> pathParam = new ArrayList<>();
         Map<String,String> map = new HashMap<>();
         pathParam = table.asMaps();
@@ -41,6 +44,7 @@ public class GivenFunctions {
 
     @Given("I have a query parameter")
     public void setQueryParameter(DataTable table){
+        AppHook.getTest().info("I have a query parameter : " + table.asMaps());
         List<Map<String,String>> queryParam = new ArrayList<>();
         Map<String,String> map = new HashMap<>();
         queryParam = table.asMaps();

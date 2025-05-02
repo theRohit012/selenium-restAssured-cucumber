@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import static java.sql.DriverManager.getDriver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -123,7 +124,7 @@ public class GuiUtilFunctions extends GuiBaseClass {
      * @param element
      */
     public static void clickOnElementUsingJSE(WebElement element,Logger logger){
-        jse = (JavascriptExecutor) driver;
+        jse = (JavascriptExecutor) driver.get();
         elementIsDisplayed(element,logger);
         jse.executeScript("argument[0].click();",element);
         logger.info("{} element clicked using JavaScriptExecutor",element.toString());
@@ -134,13 +135,13 @@ public class GuiUtilFunctions extends GuiBaseClass {
      * @return
      */
     public static String switchToWindow(){
-        String mainWindow = driver.getWindowHandle();
+        String mainWindow = driver.get().getWindowHandle();
 
-        Set<String> windows = driver.getWindowHandles();
+        Set<String> windows = driver.get().getWindowHandles();
 
         for (String currentWindow : windows) {
             if (!mainWindow.equalsIgnoreCase(currentWindow)) {
-                driver.switchTo().window(currentWindow);
+                driver.get().switchTo().window(currentWindow);
                 break;
             }
         }
@@ -152,7 +153,7 @@ public class GuiUtilFunctions extends GuiBaseClass {
      * @param mainWindow
      */
     public static void switchToWindowUsingName(String mainWindow){
-        driver.switchTo().window(mainWindow);
+        driver.get().switchTo().window(mainWindow);
     }
 
     /**
@@ -160,7 +161,7 @@ public class GuiUtilFunctions extends GuiBaseClass {
      * @param location
      */
     public static void takePageScreenshot(String location,Logger logger){
-        File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File srcFile = ((TakesScreenshot) driver.get()).getScreenshotAs(OutputType.FILE);
 
         try {
             FileUtils.copyFile(srcFile, new File(location));
@@ -177,7 +178,7 @@ public class GuiUtilFunctions extends GuiBaseClass {
     public static String getPageTitle(Logger logger){
         String title =  "";
 
-        title = driver.getTitle();
+        title = driver.get().getTitle();
         logger.info("Title of the page has been found as : {}", title);
 
         return title;
@@ -252,7 +253,7 @@ public class GuiUtilFunctions extends GuiBaseClass {
      * @method Switch back the default content
      */
     public static void switchToDefaultContent(Logger logger){
-        driver.switchTo().defaultContent();
+        driver.get().switchTo().defaultContent();
         logger.info("Switch out of frame");
     }
 
@@ -271,7 +272,7 @@ public class GuiUtilFunctions extends GuiBaseClass {
      * @param element
      */
     public static void moveToTheElement(WebElement element,Logger logger){
-        actions = new Actions(driver);
+        actions = new Actions(driver.get());
         actions.moveToElement(element).build().perform();
         logger.info("Move to an element: {}", element.toString());
     }

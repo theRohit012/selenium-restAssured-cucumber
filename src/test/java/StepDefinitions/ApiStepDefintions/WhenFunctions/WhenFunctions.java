@@ -1,6 +1,7 @@
 package StepDefinitions.ApiStepDefintions.WhenFunctions;
 
 import API_Functions.BaseClass.ApiBaseClass;
+import ApplicationHook.AppHook;
 import CommonUtilityFunctions.SharedTestContext;
 import io.cucumber.java.en.When;
 import org.testng.Assert;
@@ -17,6 +18,7 @@ public class WhenFunctions {
 
     @When("I call {string} with {string} request")
     public void userCallRequest(String api, String requestType) {
+        AppHook.getTest().info("I call "+api+" with "+requestType+" request");
         switch (requestType.toUpperCase()) {
             case "GET":
                 apiBaseClass.response = apiBaseClass.requestSpec.when().get().then().spec(apiBaseClass.response()).extract().response();

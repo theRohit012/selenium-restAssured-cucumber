@@ -1,5 +1,6 @@
 package StepDefinitions.GuiStepDefintions.CommonFunctions;
 
+import ApplicationHook.AppHook;
 import GUI_Functions.BaseClass.GuiBaseClass;
 import GUI_Functions.UtilityFunctions.GuiUtilFunctions;
 import io.cucumber.java.en.When;
@@ -11,6 +12,7 @@ public class KeyBoardMouseActions extends GuiBaseClass {
 
     @When("Move the cursor to {string} element on {string}")
     public void moveToAElement(String element,String className){
+        AppHook.getTest().info ("Move the cursor to "+element+" element on "+className);
         GuiUtilFunctions.moveToTheElement(loadWebElement(element,className),logger);
     }
 }

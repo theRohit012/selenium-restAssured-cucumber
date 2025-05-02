@@ -8,10 +8,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
@@ -19,41 +24,75 @@ import java.util.List;
 import java.util.Properties;
 
 public class GuiBaseClass {
-    public static WebDriver driver;
-    public static Properties prop = null;
+    public static Properties prop = ConfigReader.initProperties();
     public static String folderName = new SimpleDateFormat("ddMMyyyy").format(Calendar.getInstance().getTime());
     private static final String UI_PAGE_OBJECT_PACKAGE = "GUI_Functions.ObjectRepository.";
     public static WebDriverWait wait;
     private static final Logger logger = LogManager.getLogger(GuiBaseClass.class);
+    public static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     /**
      * @method Created to invoke a browser and parameter are taken from configuration file
      */
-    public static void invokeBrowser(String browser, String runMode,String URL) {
-        if (browser.equals("chrome")) {
-            ChromeOptions options = new ChromeOptions();
-            if (runMode.equalsIgnoreCase("headless")) {
-                options.addArguments("--headless=new");
-            }
-            driver = new ChromeDriver(options);
+    public static void invokeBrowser(String browser) {
+        WebDriver webDriver = null;
+        ChromeOptions chromeOptions = new ChromeOptions();
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+
+        if(prop.getProperty("runMode").equalsIgnoreCase("headless")){
+            chromeOptions.addArguments("--headless=new");
+            firefoxOptions.addArguments("-headless");
         }
 
-        driver.manage().window().maximize();
-        driver.manage().deleteAllCookies();
+        try {
+            if (prop.getProperty("grid").equalsIgnoreCase("Yes")) {
+                logger.info("Tests are running with GRID");
+                // RemoteWebDriver for Grid
+                switch (browser.toLowerCase()) {
+                    case "chrome":
+                        webDriver = new RemoteWebDriver(new URL(prop.getProperty("gridHubURL")), chromeOptions);
+                        break;
+                    case "firefox":
+                        webDriver = new RemoteWebDriver(new URL(prop.getProperty("gridHubURL")), firefoxOptions);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported browser: " + browser);
+                }
+            } else {
+                // Local WebDriver
+                logger.info("Tests are running with WebDriver");
+                switch (browser.toLowerCase()) {
+                    case "chrome":
+                        webDriver = new ChromeDriver(chromeOptions);
+                        break;
+                    case "firefox":
+                        webDriver = new FirefoxDriver(firefoxOptions);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported browser: " + browser);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize WebDriver: " + e.getMessage(), e);
+        }
+        driver.set(webDriver);
 
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(Constant.PAGE_LOAD_TIMEOUT));
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(Constant.IMPLICIT_WAIT));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(Constant.EXPLICIT_WAIT));
+        driver.get().manage().window().maximize();
+        driver.get().manage().deleteAllCookies();
 
-        logger.info("Opening {} browser and loading {}", browser, URL);
-        driver.get(URL);
+        driver.get().manage().timeouts().pageLoadTimeout(Duration.ofSeconds(Constant.PAGE_LOAD_TIMEOUT));
+        driver.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(Constant.IMPLICIT_WAIT));
+        wait = new WebDriverWait(driver.get(), Duration.ofSeconds(Constant.EXPLICIT_WAIT));
+
+        logger.info("Opening {} browser and loading {}", browser, prop.getProperty("url"));
+        driver.get().get(prop.getProperty("url"));
     }
 
     /**
      * @method Create to navigate to URL
      */
     public static void navigateToUrl(String URL){
-        driver.navigate().to(URL);
+        driver.get().navigate().to(URL);
     }
 
     /**
@@ -76,7 +115,7 @@ public class GuiBaseClass {
             throw new RuntimeException(e);
         }
 
-        PageFactory.initElements(driver, loadClass);
+        PageFactory.initElements(driver.get(), loadClass);
         Field field = null;
 
         try {
@@ -115,7 +154,7 @@ public class GuiBaseClass {
             throw new RuntimeException(e);
         }
 
-        PageFactory.initElements(driver, loadClass);
+        PageFactory.initElements(driver.get(), loadClass);
 
         try {
             field = loadClass.getDeclaredField(locator);
